@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using CsvHelper.Configuration.Attributes;
 using System.Data.SqlClient;
+//using Lab1.Models;
 
 namespace Lab1
 {
@@ -17,6 +18,8 @@ namespace Lab1
         {
 
             Stopwatch stopwatch = new Stopwatch();
+            //Lab1Context _context = new Lab1Context();
+
 
 
             stopwatch.Start();
@@ -58,7 +61,7 @@ namespace Lab1
             //Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
 
 
-            await SaveAllCollection(imported_kody);
+            //await SaveAllCollection(imported_kody);
 
             //await EFsaveOneRecord(imported_kody, _context);
 
@@ -120,63 +123,105 @@ namespace Lab1
         }
 
         //SaveAllCollection
-        static async Task SaveAllCollection(List<Kody> kody)
-        {
-            const int samples = 10;
-            Stopwatch stopwatch = new Stopwatch();
+        //static async Task SaveAllCollection(List<Kody> kody)
+        //{
+        //    const int samples = 10;
+        //    Stopwatch stopwatch = new Stopwatch();
 
-            Stopwatch meanRecordStopwatch = new Stopwatch();
-            TimeSpan recordTimeSpan = new TimeSpan();
-            TimeSpan sampleTimeSpan = new TimeSpan();
+        //    Stopwatch meanRecordStopwatch = new Stopwatch();
+        //    TimeSpan recordTimeSpan = new TimeSpan();
+        //    TimeSpan sampleTimeSpan = new TimeSpan();
 
-            string sqlExpression = "INSERT INTO Kody_Pocztowe (Kod_pocztowy, Adres, Miejscowosc, Wojewodztwo, Powiat) Values (@Kod_pocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)";
+        //    string sqlExpression = "INSERT INTO Kody_Pocztowe (Kod_pocztowy, Adres, Miejscowosc, Wojewodztwo, Powiat) Values (@Kod_pocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)";
 
-            for (int i = 1; i <= samples; i++)
-            {
-                await ClearTable();
-                stopwatch.Start();
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    await connection.OpenAsync();
+        //    for (int i = 1; i <= samples; i++)
+        //    {
+        //        await ClearTable();
+        //        stopwatch.Start();
+        //        using (SqlConnection connection = new SqlConnection(connectionString))
+        //        {
+        //            await connection.OpenAsync();
 
-                    foreach (var kod in kody)
-                    {
-                        meanRecordStopwatch.Start();
-                        SqlCommand command = new SqlCommand(sqlExpression, connection);
+        //            foreach (var kod in kody)
+        //            {
+        //                meanRecordStopwatch.Start();
+        //                SqlCommand command = new SqlCommand(sqlExpression, connection);
 
-                        SqlParameter kod_pocztowyParameter = new SqlParameter("@Kod_pocztowy", kod.kod_pocztowy);
-                        SqlParameter adresParameter = new SqlParameter("@Adres", kod.adres);
-                        SqlParameter miejscowoscParameter = new SqlParameter("@Miejscowosc", kod.miejscowosc);
-                        SqlParameter wojewodztwoParameter = new SqlParameter("@Wojewodztwo", kod.wojewodztwo);
-                        SqlParameter powiatParameter = new SqlParameter("@Powiat", kod.powiat);
+        //                SqlParameter kod_pocztowyParameter = new SqlParameter("@Kod_pocztowy", kod.kod_pocztowy);
+        //                SqlParameter adresParameter = new SqlParameter("@Adres", kod.adres);
+        //                SqlParameter miejscowoscParameter = new SqlParameter("@Miejscowosc", kod.miejscowosc);
+        //                SqlParameter wojewodztwoParameter = new SqlParameter("@Wojewodztwo", kod.wojewodztwo);
+        //                SqlParameter powiatParameter = new SqlParameter("@Powiat", kod.powiat);
 
-                        command.Parameters.Add(kod_pocztowyParameter);
-                        command.Parameters.Add(adresParameter);
-                        command.Parameters.Add(miejscowoscParameter);
-                        command.Parameters.Add(wojewodztwoParameter);
-                        command.Parameters.Add(powiatParameter);
+        //                command.Parameters.Add(kod_pocztowyParameter);
+        //                command.Parameters.Add(adresParameter);
+        //                command.Parameters.Add(miejscowoscParameter);
+        //                command.Parameters.Add(wojewodztwoParameter);
+        //                command.Parameters.Add(powiatParameter);
 
-                        await command.ExecuteNonQueryAsync();
+        //                await command.ExecuteNonQueryAsync();
 
-                        meanRecordStopwatch.Stop();
-                        recordTimeSpan += meanRecordStopwatch.Elapsed;
-                        meanRecordStopwatch.Restart();
-                    }
-                }
-                stopwatch.Stop();
-                sampleTimeSpan += stopwatch.Elapsed;
-                Console.WriteLine($"Mean Saving by one Record Time is {stopwatch.Elapsed}");
+        //                meanRecordStopwatch.Stop();
+        //                recordTimeSpan += meanRecordStopwatch.Elapsed;
+        //                meanRecordStopwatch.Restart();
+        //            }
+        //        }
+        //        stopwatch.Stop();
+        //        sampleTimeSpan += stopwatch.Elapsed;
+        //        Console.WriteLine($"Mean Saving by one Record Time is {stopwatch.Elapsed}");
 
-                stopwatch.Restart();
-            }
+        //        stopwatch.Restart();
+        //    }
 
-            sampleTimeSpan = sampleTimeSpan.Divide(samples);
-            recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
-            Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
-            Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
-        }
+        //    sampleTimeSpan = sampleTimeSpan.Divide(samples);
+        //    recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
+        //    Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
+        //    Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
+        //}
 
+        //EFsaveOneRecord
+        //static async Task EFsaveOneRecord(List<Kody> kody, Lab1Context context)
+        //{
+        //    const int samples = 10;
+        //    Stopwatch sampleStopwatch = new Stopwatch();
+        //    Stopwatch recordStopwatch = new Stopwatch();
+        //    TimeSpan recordTimeSpan = new TimeSpan();
+        //    TimeSpan sampleTimeSpan = new TimeSpan();
 
+        //    for (int i = 1; i <= samples; i++)
+        //    {
+        //        await ClearTable();
+
+        //        sampleStopwatch.Start();
+        //        for (int j = 0; j < kody.Count; j++)
+        //        {
+        //            recordStopwatch.Start();
+        //            var data = new KodyPocztowe
+        //            {
+        //                Adres = kody[j].adres,
+        //                Miejscowosc = kody[j].miejscowosc,
+        //                Powiat = kody[j].powiat,
+        //                KodPocztowy = kody[j].kod_pocztowy,
+        //                Wojewodztwo = kody[j].wojewodztwo
+        //            };
+
+        //            context.KodyPocztowes.Add(data);
+
+        //            recordStopwatch.Stop();
+        //            recordTimeSpan += recordStopwatch.Elapsed;
+        //            recordStopwatch.Restart();
+        //        }
+        //        context.SaveChanges();
+        //        sampleStopwatch.Stop();
+        //        sampleTimeSpan += sampleStopwatch.Elapsed;
+        //        sampleStopwatch.Restart();
+        //    }
+
+        //    sampleTimeSpan = sampleTimeSpan.Divide(samples);
+        //    recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
+        //    Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
+        //    Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
+        //}
 
 
 

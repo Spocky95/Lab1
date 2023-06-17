@@ -10,46 +10,11 @@ namespace Lab1
 {
     public class Program
     {
-        public class Kody
-        {
-            [Name("KOD POCZTOWY")]
-            [Index(0)]
-            public string kod_pocztowy { get; set; } = "";
-            [Name("ADRES")]
-            [Index(1)]
-            public string adres { get; set; } = "";
-            [Name("MIEJSCOWOŚĆ")]
-            [Index(2)]
-            public string miejscowosc { get; set; } = "";
-            [Name("WOJEWÓDZTWO")]
-            [Index(3)]
-            public string wojewodztwo { get; set; } = "";
-            [Name("POWIAT")]
-            [Index(4)]
-            public string powiat { get; set; } = "";
-        }
-        static async Task ClearTable()
-        {
-            string sqlExpression = "DELETE FROM Kody_pocztowe";
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                await connection.OpenAsync();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                await command.ExecuteNonQueryAsync();
-            }
-        }
-
-
-
-
-        static string connectionString = @"Data Source=LOCALHOST\LOCALDATABASE;Initial Catalog=lab1;User ID=ADMIN;Password=cisco123;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        static string connectionString = @"Server=LOCALHOST\LOCALDATABASE;User ID=ADMIN;Password=cisco123;Encrypt=False;TrustServerCertificate=True;Database=lab1";
         static List<Kody> imported_kody = new List<Kody>();
 
         static async Task Main(string[] args)
         {
-            await importCSV();
 
             Stopwatch stopwatch = new Stopwatch();
 
@@ -57,7 +22,7 @@ namespace Lab1
             stopwatch.Start();
             await importCSV();
             stopwatch.Stop();
-            Console.WriteLine($"Elapsed Import Time is {stopwatch.Elapsed}");
+            Console.WriteLine($"The import was performed for {stopwatch.Elapsed}");
             stopwatch.Restart();
 
             const int samples = 10;
@@ -81,7 +46,7 @@ namespace Lab1
                 }
                 stopwatch.Stop();
                 sampleTimeSpan += stopwatch.Elapsed;
-                Console.WriteLine($"Mean Saving by one Record Time is {stopwatch.Elapsed}");
+                Console.WriteLine($"Average amount of time to complete a cycle {stopwatch.Elapsed}");
 
                 stopwatch.Restart();
 
@@ -143,7 +108,40 @@ namespace Lab1
 
 
 
-    }
-}
+        public class Kody
+        {
+            [Name("KOD POCZTOWY")]
+            [Index(0)]
+            public string kod_pocztowy { get; set; } = "";
+            [Name("ADRES")]
+            [Index(1)]
+            public string adres { get; set; } = "";
+            [Name("MIEJSCOWOŚĆ")]
+            [Index(2)]
+            public string miejscowosc { get; set; } = "";
+            [Name("WOJEWÓDZTWO")]
+            [Index(3)]
+            public string wojewodztwo { get; set; } = "";
+            [Name("POWIAT")]
+            [Index(4)]
+            public string powiat { get; set; } = "";
+        }
+       
+        static async Task ClearTable()
+        {
+            string sqlExpression = "DELETE FROM Kody_pocztowe";
 
-//Data Source=LOCALHOST\LOCALDATABASE;Initial Catalog=lab1;User ID=ADMIN;Password=cisco123;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+
+
+    }
+
+
+}

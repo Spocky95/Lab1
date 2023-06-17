@@ -51,6 +51,14 @@ namespace Lab1
                 stopwatch.Restart();
 
             }
+
+            sampleTimeSpan = sampleTimeSpan.Divide(samples);
+            recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
+            Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
+            Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
+
+
+
         }
 
         static async Task importCSV()
@@ -99,11 +107,11 @@ namespace Lab1
                 await command.ExecuteNonQueryAsync();
             }
 
-
-
-
-
         }
+
+        //SaveAllCollection
+        
+
 
 
 

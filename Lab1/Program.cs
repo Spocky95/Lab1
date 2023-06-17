@@ -350,7 +350,7 @@ namespace Lab1
                 }
                 stopwatch.Stop();
                 sampleTimeSpan += stopwatch.Elapsed;
-                Console.WriteLine($"[{i}] SQLBulkCopy Saving Time is {stopwatch.Elapsed}");
+                Console.WriteLine($"[{i}] SQLBulkCopy Saving by one Record Time is {stopwatch.Elapsed}");
 
                 stopwatch.Restart();
             }

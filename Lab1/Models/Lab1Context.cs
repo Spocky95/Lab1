@@ -44,7 +44,6 @@ public partial class Lab1Context : DbContext
         {
             entity.ToTable("Kody_PocztoweEF");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Adres).HasColumnType("text");
             entity.Property(e => e.KodPocztowy)
                 .HasColumnType("text")

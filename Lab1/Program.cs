@@ -25,38 +25,48 @@ namespace Lab1
             Console.WriteLine($"The import was performed for {stopwatch.Elapsed}");
             stopwatch.Restart();
 
-            const int samples = 10;
-            Stopwatch meanRecordStopwatch = new Stopwatch();
-            TimeSpan recordTimeSpan = new TimeSpan();
-            TimeSpan sampleTimeSpan = new TimeSpan();
+            //const int samples = 10;
+            //Stopwatch meanRecordStopwatch = new Stopwatch();
+            //TimeSpan recordTimeSpan = new TimeSpan();
+            //TimeSpan sampleTimeSpan = new TimeSpan();
 
-            for (int i = 1; i <= samples; i++)
-            {
-                await ClearTable();
+            //for (int i = 1; i <= samples; i++)
+            //{
+            //    await ClearTable();
 
-                stopwatch.Start();
-                foreach (var record in imported_kody)
-                {
-                    meanRecordStopwatch.Start();
-                    await SaveOneRecord(record);
-                    meanRecordStopwatch.Stop();
+            //    stopwatch.Start();
+            //    foreach (var record in imported_kody)
+            //    {
+            //        meanRecordStopwatch.Start();
+            //        await SaveOneRecord(record);
+            //        meanRecordStopwatch.Stop();
 
-                    recordTimeSpan += meanRecordStopwatch.Elapsed;
-                    meanRecordStopwatch.Restart();
-                }
-                stopwatch.Stop();
-                sampleTimeSpan += stopwatch.Elapsed;
-                Console.WriteLine($"Average amount of time to complete a cycle {stopwatch.Elapsed}");
+            //        recordTimeSpan += meanRecordStopwatch.Elapsed;
+            //        meanRecordStopwatch.Restart();
+            //    }
+            //    stopwatch.Stop();
+            //    sampleTimeSpan += stopwatch.Elapsed;
+            //    Console.WriteLine($"Average amount of time to complete a cycle {stopwatch.Elapsed}");
 
-                stopwatch.Restart();
+            //    stopwatch.Restart();
 
-            }
+            //}
 
-            sampleTimeSpan = sampleTimeSpan.Divide(samples);
-            recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
-            Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
-            Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
+            //sampleTimeSpan = sampleTimeSpan.Divide(samples);
+            //recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
+            //Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
+            //Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
 
+
+            await SaveAllCollection(imported_kody);
+
+            //await EFsaveOneRecord(imported_kody, _context);
+
+            //await DappersaveOneRecord(imported_kody, kodyPocztoweRepository);
+
+            //await DapperSaveAll(imported_kody, kodyPocztoweRepository);
+
+            //await BulkCopySaveAll(imported_kody);
 
 
         }
@@ -110,7 +120,61 @@ namespace Lab1
         }
 
         //SaveAllCollection
-        
+        static async Task SaveAllCollection(List<Kody> kody)
+        {
+            const int samples = 10;
+            Stopwatch stopwatch = new Stopwatch();
+
+            Stopwatch meanRecordStopwatch = new Stopwatch();
+            TimeSpan recordTimeSpan = new TimeSpan();
+            TimeSpan sampleTimeSpan = new TimeSpan();
+
+            string sqlExpression = "INSERT INTO Kody_Pocztowe (Kod_pocztowy, Adres, Miejscowosc, Wojewodztwo, Powiat) Values (@Kod_pocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)";
+
+            for (int i = 1; i <= samples; i++)
+            {
+                await ClearTable();
+                stopwatch.Start();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    foreach (var kod in kody)
+                    {
+                        meanRecordStopwatch.Start();
+                        SqlCommand command = new SqlCommand(sqlExpression, connection);
+
+                        SqlParameter kod_pocztowyParameter = new SqlParameter("@Kod_pocztowy", kod.kod_pocztowy);
+                        SqlParameter adresParameter = new SqlParameter("@Adres", kod.adres);
+                        SqlParameter miejscowoscParameter = new SqlParameter("@Miejscowosc", kod.miejscowosc);
+                        SqlParameter wojewodztwoParameter = new SqlParameter("@Wojewodztwo", kod.wojewodztwo);
+                        SqlParameter powiatParameter = new SqlParameter("@Powiat", kod.powiat);
+
+                        command.Parameters.Add(kod_pocztowyParameter);
+                        command.Parameters.Add(adresParameter);
+                        command.Parameters.Add(miejscowoscParameter);
+                        command.Parameters.Add(wojewodztwoParameter);
+                        command.Parameters.Add(powiatParameter);
+
+                        await command.ExecuteNonQueryAsync();
+
+                        meanRecordStopwatch.Stop();
+                        recordTimeSpan += meanRecordStopwatch.Elapsed;
+                        meanRecordStopwatch.Restart();
+                    }
+                }
+                stopwatch.Stop();
+                sampleTimeSpan += stopwatch.Elapsed;
+                Console.WriteLine($"Mean Saving by one Record Time is {stopwatch.Elapsed}");
+
+                stopwatch.Restart();
+            }
+
+            sampleTimeSpan = sampleTimeSpan.Divide(samples);
+            recordTimeSpan = recordTimeSpan.Divide(imported_kody.Count * samples);
+            Console.WriteLine($"Mean Saving by one Record Time is {sampleTimeSpan}");
+            Console.WriteLine($"Mean Record Saving Time is {recordTimeSpan}\n");
+        }
 
 
 
